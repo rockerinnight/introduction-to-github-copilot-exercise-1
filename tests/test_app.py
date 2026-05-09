@@ -142,6 +142,28 @@ def test_signup_unknown_activity():
     assert response.json()["detail"] == "Activity not found"
 
 
+def test_signup_invalid_email():
+    activity_name = EXPECTED_ACTIVITIES[0]
+
+    # Act
+    response = client.post(f"/activities/{activity_name}/signup?email=not-an-email")
+
+    # Assert
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Invalid email format"
+
+
+def test_signup_normalizes_email():
+    activity_name = EXPECTED_ACTIVITIES[0]
+
+    # Act
+    response = client.post(f"/activities/{activity_name}/signup?email=NEWSTUDENT@MERGINGTON.EDU")
+
+    # Assert
+    assert response.status_code == 200
+    assert "newstudent@mergington.edu" in app_module.activities[activity_name]["participants"]
+
+
 # ---------------------------------------------------------------------------
 # DELETE /activities/{activity_name}/unregister
 # ---------------------------------------------------------------------------
@@ -184,3 +206,14 @@ def test_unregister_unknown_activity():
     # Assert
     assert response.status_code == 404
     assert response.json()["detail"] == "Activity not found"
+
+
+def test_unregister_invalid_email():
+    activity_name = EXPECTED_ACTIVITIES[0]
+
+    # Act
+    response = client.delete(f"/activities/{activity_name}/unregister?email=not-an-email")
+
+    # Assert
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Invalid email format"

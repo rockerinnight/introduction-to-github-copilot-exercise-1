@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      activitySelect.innerHTML = "";
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
@@ -20,27 +21,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
         const participants = Array.isArray(details.participants) ? details.participants : [];
-        const participantsMarkup = participants.length
-          ? participants
-              .map(
-                (participant) =>
-                  `<li><span class="participant-email">${participant}</span><button class="delete-btn" data-activity="${name}" data-email="${participant}" title="Unregister">🗑&#xFE0E;</button></li>`
-              )
-              .join("")
-          : '<li class="empty-participants">No participants yet</li>';
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-          <div class="participants-section">
-            <p class="participants-title"><strong>Participants (${participants.length})</strong></p>
-            <ul class="participants-list">
-              ${participantsMarkup}
-            </ul>
-          </div>
-        `;
+        const title = document.createElement("h4");
+        title.textContent = name;
+
+        const description = document.createElement("p");
+        description.textContent = details.description;
+
+        const schedule = document.createElement("p");
+        const scheduleStrong = document.createElement("strong");
+        scheduleStrong.textContent = "Schedule:";
+        schedule.append(scheduleStrong, ` ${details.schedule}`);
+
+        const availability = document.createElement("p");
+        const availabilityStrong = document.createElement("strong");
+        availabilityStrong.textContent = "Availability:";
+        availability.append(availabilityStrong, ` ${spotsLeft} spots left`);
+
+        const participantsSection = document.createElement("div");
+        participantsSection.className = "participants-section";
+
+        const participantsTitle = document.createElement("p");
+        participantsTitle.className = "participants-title";
+        const participantsStrong = document.createElement("strong");
+        participantsStrong.textContent = `Participants (${participants.length})`;
+        participantsTitle.appendChild(participantsStrong);
+
+        const participantsList = document.createElement("ul");
+        participantsList.className = "participants-list";
+
+        if (participants.length) {
+          participants.forEach((participant) => {
+            const participantItem = document.createElement("li");
+
+            const participantEmail = document.createElement("span");
+            participantEmail.className = "participant-email";
+            participantEmail.textContent = participant;
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-btn";
+            deleteBtn.dataset.activity = name;
+            deleteBtn.dataset.email = participant;
+            deleteBtn.title = "Unregister";
+            deleteBtn.setAttribute(
+              "aria-label",
+              `Unregister ${participant} from ${name}`
+            );
+            deleteBtn.textContent = "🗑︎";
+
+            participantItem.append(participantEmail, deleteBtn);
+            participantsList.appendChild(participantItem);
+          });
+        } else {
+          const emptyParticipants = document.createElement("li");
+          emptyParticipants.className = "empty-participants";
+          emptyParticipants.textContent = "No participants yet";
+          participantsList.appendChild(emptyParticipants);
+        }
+
+        participantsSection.append(participantsTitle, participantsList);
+        activityCard.append(title, description, schedule, availability, participantsSection);
 
         activitiesList.appendChild(activityCard);
 
