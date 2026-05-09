@@ -98,7 +98,11 @@ section h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  border: 1px solid #dbe7ff;
   color: #243042;
 }
 
@@ -111,21 +115,25 @@ section h3 {
 }
 
 .delete-btn {
-  background: none;
-  border: none;
-  padding: 0 2px;
+  background: #ffe8e8;
+  border: 1px solid #f4b7b7;
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
   font-size: 0.95em;
   line-height: 1;
   cursor: pointer;
   color: #c62828;
-  opacity: 0.55;
-  transition: opacity 0.15s;
+  opacity: 0.75;
+  transition: opacity 0.15s, transform 0.15s, background-color 0.15s;
   flex-shrink: 0;
 }
 
 .delete-btn:hover {
   opacity: 1;
-  background: none;
+  transform: scale(1.05);
+  background-color: #ffd5d5;
 }
 
 .empty-participants {
